@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Backbone-Events-all</title>
+	<script src="js/jquery-1.12.4.min.js"></script>
+	<script src="js/underscore.js"></script>
+	<script src="js/backbone.js"></script>
+	<!-- <script src="js/app.js"></script> -->
+	<!-- <link rel="stylesheet" href="css/student.css"> -->
+	<style>
+		.change {
+			border: 1px solid red;
+		}
+	</style>
+</head>
+
+<body>
+<h1>all特殊事件</h1>
+<p>在backbone中，all是一个很特殊的事件，因为事件在对象的任何事件被触发时，他都会自动触发，可以说是一个全局性的事件。此外，既然他是一个事件，也可以通过对象的trigger方法进行手动触发。在触发改时间是，嗨可以在回调函数中通过value参数获得当前正在触发的事件名称。</p>
+<p>obj.on('all', function)</p>
+
+<p>事件触发从属性事件开始，然后才是对象事件</p>
+</body>
+
+<script>
+	var person = Backbone.Model.extend({
+		defaults: {
+			name: '',
+			gender: '女',
+			age: 20,
+			score: 120
+		}
+	});
+
+	var man = new person();
+
+	man.on('change:name', function() {
+		console.log('触发了change:name事件');
+	});
+	man.on('change:age', function() {
+		console.log('触发了change:age事件');
+	});
+
+	man.on('all', function(value) {
+		console.log('触发了all事件' + value);
+	})
+
+	man.set('name', 'liuyuan');
+	man.set('age', 55);
+</script>
+</html>

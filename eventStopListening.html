@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Backbone-Events-stopListening停止监听</title>
+	<script src="js/jquery-1.12.4.min.js"></script>
+	<script src="js/underscore.js"></script>
+	<script src="js/backbone.js"></script>
+	<!-- <script src="js/app.js"></script> -->
+	<!-- <link rel="stylesheet" href="css/student.css"> -->
+	<style>
+		.change {
+			border: 1px solid red;
+		}
+	</style>
+</head>
+
+<body>
+<h1>利用listenTo可以让一个对象监听另一个对象的事件</h1>
+<p>view.listenTo(model, 'change', view.render);</p>
+上面的等价于
+<p>model.on('change', view.reder, view)</p>
+
+listenTo是一个对象级别的监听方法：
+<p>Obj1.listenTo(Obj2, EventName, function)</p>
+</body>
+
+<script>
+	var person = Backbone.Model.extend({
+		defaults: {
+			name: '',
+			gender: '女',
+			age: 20,
+			score: 120
+		}
+	});
+
+	var man = new person();
+
+	var obj = _.extend({}, Backbone.Events);
+
+	obj.listenTo(man, 'change:age', function(model, value) {
+		var oldage = model.previous('age');
+		var newage = model.get('age');
+		console.log('age原值' + oldage + '，age新值' + newage);
+	});
+
+	obj.stopListening(man, 'change:age');
+
+	man.set('age', 55);
+</script>
+</html>

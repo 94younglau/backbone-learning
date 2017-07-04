@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Backbone-Events-once一次绑定</title>
+	<script src="js/jquery-1.12.4.min.js"></script>
+	<script src="js/underscore.js"></script>
+	<script src="js/backbone.js"></script>
+	<!-- <script src="js/app.js"></script> -->
+	<!-- <link rel="stylesheet" href="css/student.css"> -->
+	<style>
+		.change {
+			border: 1px solid red;
+		}
+	</style>
+</head>
+
+<body>
+</body>
+<h1>once事件常用语初始化事件</h1>
+<div id="main"></div>
+<script>
+	var person = Backbone.Model.extend({
+		defaults: {
+			name: '',
+			gender: '女',
+			age: 20,
+			score: 120
+		}
+	});
+
+	var man = new person();
+
+	var initNum = 0;
+
+	man.once('change', function() {
+		initNum++;
+		console.log('事件触发次数为：' + initNum);
+	});
+
+	man.set('age', 1);
+	man.set('age', 2);
+
+	// 第二种
+	// var objEvents = {
+	// 	'change:score': score_change,
+	// 	'change:age': age_change
+	// }
+	// man.on(objEvents);
+	// function score_chage() {...}
+	// function age_change() {...}
+</script>
+</html>

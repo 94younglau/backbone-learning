@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Backbone-View模板渲染列表</title>
+	<script src="js/jquery-1.12.4.min.js"></script>
+	<script src="js/underscore.js"></script>
+	<script src="js/backbone.js"></script>
+	<!-- <script src="js/app.js"></script> -->
+	<!-- <link rel="stylesheet" href="css/student.css"> -->
+</head>
+<body>
+	<ul id="list"></ul>
+	<script type="text/template" id="tpl-item">
+		<li>编号：<%= Code %></li>
+		<li>姓名：<%= Name %></li>
+		<li>分数：<%= Score %></li>
+	</script>
+</body>
+<script>
+	var student = Backbone.Model.extend({
+		defaults: {
+			Code: '',
+			Name: '',
+			Score: 0
+		}
+	});
+	var stus = new student({
+		Code: '111',
+		Name: '刘源',
+		Score: 190
+	});
+
+	var stuView = Backbone.View.extend({
+		el: $('#list'),
+		initialize: function() {
+			this.template = _.template($('#tpl-item').html());
+		},
+		render: function() {
+			this.$el.html(this.template(this.model.toJSON()));
+		}
+	});
+
+	var stuv = new stuView({ model: stus });
+	stuv.render();
+</script>
+</html>

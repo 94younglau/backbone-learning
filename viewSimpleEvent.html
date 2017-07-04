@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Backbone-View简单事件</title>
+	<script src="js/jquery-1.12.4.min.js"></script>
+	<script src="js/underscore.js"></script>
+	<script src="js/backbone.js"></script>
+	<!-- <script src="js/app.js"></script> -->
+	<!-- <link rel="stylesheet" href="css/student.css"> -->
+	<style>
+		.change {
+			border: 1px solid red;
+		}
+	</style>
+</head>
+<body>
+<h1>events对象存放的DOM元素的事件列表</h1>
+</body>
+<script>
+	var stuView = Backbone.View.extend({
+		el: $('body'),
+		initialize: function() {
+			this.render();
+		},
+		render: function() {
+			this.$el.append('<div id="click_me">你好啊！点我看看！</div>');
+		},
+		events: {
+			'click div#click_me': 'togcls'
+		},
+		togcls: function() {
+			$('#click_me').toggleClass('change');
+		}
+	});
+
+	var stuv = new stuView();
+</script>
+</html>

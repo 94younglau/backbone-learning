@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Backbone-Collection-Find</title>
+	<script src="js/jquery-1.12.4.min.js"></script>
+	<script src="js/underscore.js"></script>
+	<script src="js/backbone.js"></script>
+	<!-- <script src="js/app.js"></script> -->
+	<!-- <link rel="stylesheet" href="css/student.css"> -->
+	<style>
+		.change {
+			border: 1px solid red;
+		}
+	</style>
+</head>
+	
+<body>
+	<h1>查找集合对象中的模型</h1>
+</body>
+
+<script>
+	var Student = Backbone.Model.extend({
+		defaults: {
+			code: '',
+			name: '',
+			score: ''
+		},
+
+		idAttribute: 'code'
+	});
+
+	// var StudentCollection = Backbone.Collection.extend({
+	// 	model: Student,
+	// });     
+
+	var students = [{
+		code: '101',
+		name: '张三',
+		score: 80
+	}, {
+		code: '102',
+		name: '李四',
+		score: 40
+	}, {
+		code: '103',
+		name: '王五',
+		score: 60
+	}, {
+		code: '104',
+		name: '赵六',
+		score: 90
+	}, {
+		code: '105',
+		name: '田七',
+		score: 60
+	}, {
+		code: '106',
+		name: '王八',
+		score: 88
+	}, {
+		code: '107',
+		name: '老九',
+		score: 49
+	}];
+
+	var studentList = new Backbone.Collection(students, {model: Student});
+
+	console.log('原数据');
+	_.each(studentList.models, function(item) {
+		console.log(item.toJSON());
+	});
+
+	console.log('get查找');
+	console.log(studentList.get(102).toJSON());
+
+	console.log('at查找');
+	console.log(studentList.at(3).toJSON());
+
+	console.log('findWhere');
+	console.log(studentList.findWhere({ score: 60 }).toJSON());
+
+	console.log('where true/false');
+	console.log(studentList.where({ score: 90 }, true).toJSON());
+
+	_.each(studentList.where({ score: 90 }, false), function(item) {
+		console.log(item.toJSON());
+	})
+</script>
+</html>

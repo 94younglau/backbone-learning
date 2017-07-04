@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>todo-jquery</title>
+	<script src="js/jquery-1.12.4.min.js"></script>
+	<script src="js/underscore.js"></script>
+	<script src="js/backbone.js"></script>
+	<style>
+		.change {
+			border: 1px solid red;
+		}
+	</style>
+</head>
+
+<body>
+	<h1>todo-jquery</h1>
+	<div id="container">
+		<input type="text" id="add_one" placeholder="添加一个todo">
+		<ul id="todo_list">
+			
+		</ul>
+	</div>
+</body>
+
+<script>
+	$(function() {
+
+		var app = {
+			init: function() {
+				this.todos = [];
+				this.bindEvents();
+			},
+
+			bindEvents: function() {
+				$('#add_one').on('keyup', this.addOne.bind(this)); 
+			},
+
+			render: function() {
+				var todos = this.todos;
+				var todoList = '';
+				for (var i = 0; i < todos.length; i++) {
+					todoList += '<li>' + todos[i] + '</li>';
+				};
+				$('#todo_list').html(todoList);
+			},
+
+			addOne: function(e) {
+				var $input = $(e.target);
+				var val = $input.val().trim();
+
+				if(event.which !== 13 || !val) {
+					return;
+				}
+
+				this.todos.push(val);
+
+				$input.val('');
+
+				this.render(); 
+			}
+
+
+		}
+
+		app.init();
+	});
+
+
+</script>
+</html>

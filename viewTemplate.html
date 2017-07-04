@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Backbone-View模板</title>
+	<script src="js/jquery-1.12.4.min.js"></script>
+	<script src="js/underscore.js"></script>
+	<script src="js/backbone.js"></script>
+	<!-- <script src="js/app.js"></script> -->
+	<!-- <link rel="stylesheet" href="css/student.css"> -->
+</head>
+<body>
+	<div id="score"></div>
+	<script type="text/template" id="tpl-score">
+		<%= score>600 ? '优秀':'及格' %>
+	</script>
+</body>
+<script>
+	var stuview = Backbone.View.extend({
+		el: $('#score'), //坑
+		initialize: function() {
+			this.template = _.template($('#tpl-score').html());
+		},
+		render: function(pscore) {
+			this.$el.html(this.template({ score: pscore }));
+		}
+	});
+
+	var stuv = new stuview();
+	stuv.render(500);
+</script>
+</html>

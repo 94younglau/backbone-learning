@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Backbone-View视图访问model模型</title>
+	<script src="js/jquery-1.12.4.min.js"></script>
+	<script src="js/underscore.js"></script>
+	<script src="js/backbone.js"></script>
+	<!-- <script src="js/app.js"></script> -->
+	<link rel="stylesheet" href="css/student.css">
+</head>
+<body>
+<div id="show"></div>
+	<script>
+		var student = Backbone.Model.extend({
+			defaults: {
+				Code: '',
+				Name: '',
+				Score: 0
+			}
+		});
+
+		
+		// 1
+		// 内部调用
+		var stusView = Backbone.View.extend({
+			el: '#show',
+			render: function() {
+				this.el.innerHTML = JSON.stringify(this.model);
+			},
+			model:  new student({ Code: '123000', Name: '刘源', Score: 20 })
+		});
+		var stuv = new stusView();
+
+
+		// 2
+		// 实例化传入
+		var stus = new student({
+			Code: '123000',
+			Name: '刘源',
+			Score: 20
+		});
+		var stusView = Backbone.View.extend({
+			el: '#show',
+			render: function() {
+				this.el.innerHTML = JSON.stringify(this.model);
+			}
+		});
+		var stuv = new stusView();
+
+
+		stuv.render();
+	</script>
+</body>
+</html>

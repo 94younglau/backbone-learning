@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Backbone-View视图访问model模型</title>
+	<script src="js/jquery-1.12.4.min.js"></script>
+	<script src="js/underscore.js"></script>
+	<script src="js/backbone.js"></script>
+	<!-- <script src="js/app.js"></script> -->
+	<!-- <link rel="stylesheet" href="css/student.css"> -->
+</head>
+<body>
+<h1>collection的数据存储在models里面，控制台可以打印出来看看</h1>
+<div id="show"></div>
+	<script>
+	var stumodels = [{
+		Code: '1',
+		Name: '张三',
+		Score: 100
+	}, {
+		Code: '2',
+		Name: '李四',
+		Score: 110
+	}, {
+		Code: '3',
+		Name: '王五',
+		Score: 120
+	}, {
+		Code: '4',
+		Name: '老六',
+		Score: 130
+	}, {
+		Code: '5',
+		Name: '头七',
+		Score: 140
+	}];
+
+	var stulist = new Backbone.Collection(stumodels);
+	// console.log(stulist);
+
+	var stuview = Backbone.View.extend({
+		el: '#show',
+		render: function() {
+			var curlist = this.collection.models;
+			for (var i = 0; i < curlist.length; i++) {
+				this.el.innerHTML += JSON.stringify(curlist[i]) + '<br>';
+			}
+		}
+	});
+
+	var stuv = new stuview({ collection: stulist });
+	stuv.render();
+	</script>
+</body>
+</html>

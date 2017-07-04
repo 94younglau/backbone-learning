@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Backbone-Collection-Remove</title>
+	<script src="js/jquery-1.12.4.min.js"></script>
+	<script src="js/underscore.js"></script>
+	<script src="js/backbone.js"></script>
+	<!-- <script src="js/app.js"></script> -->
+	<!-- <link rel="stylesheet" href="css/student.css"> -->
+	<style>
+		.change {
+			border: 1px solid red;
+		}
+	</style>
+</head>
+	
+<body>
+	<h1>移除集合对象中的模型</h1>
+</body>
+
+<script>
+	var Student = Backbone.Model.extend({
+		defaults: {
+			code: '',
+			name: '',
+			score: ''
+		}
+	});
+
+	var StudentCollection = Backbone.Collection.extend({
+		model: Student,
+		// good: function() {
+		// 	return this.filter(function(stu) {
+		// 		return stu.get('score') > 70;
+		// 	});
+		// }
+	});
+
+	var students = [{
+		code: '101',
+		name: '张三',
+		score: 80
+	}, {
+		code: '102',
+		name: '李四',
+		score: 40
+	}, {
+		code: '103',
+		name: '王五',
+		score: 60
+	}, {
+		code: '104',
+		name: '赵六',
+		score: 90
+	}, {
+		code: '105',
+		name: '田七',
+		score: 60
+	}];
+
+	// var studentList = new StudentCollection(students);
+	var studentList = new Backbone.Collection(students, {model: Student});
+	// var studentGood = studentList.good();
+
+	console.log('原数据');
+	_.each(studentList.models, function(item) {
+		console.log(item.toJSON());
+	});
+
+	console.log('shift删除第一条模型对象');
+	studentList.shift();
+	_.each(studentList.models, function(item) {
+		console.log(item.toJSON());
+	});
+
+	console.log('[2]删除某条对象');
+	studentList.remove(studentList.models[2]);
+	_.each(studentList.models, function(item) {
+		console.log(item.toJSON());
+	});
+
+	console.log('最后一条模型记录');
+	studentList.pop();
+	_.each(studentList.models, function(item) {
+		console.log(item.toJSON());
+	});
+</script>
+</html>

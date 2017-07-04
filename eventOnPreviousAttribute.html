@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Backbone-Events-on获取修改前的值</title>
+	<script src="js/jquery-1.12.4.min.js"></script>
+	<script src="js/underscore.js"></script>
+	<script src="js/backbone.js"></script>
+	<!-- <script src="js/app.js"></script> -->
+	<!-- <link rel="stylesheet" href="css/student.css"> -->
+	<style>
+		.change {
+			border: 1px solid red;
+		}
+	</style>
+</head>
+
+<body>
+</body>
+<div id="main"></div>
+<script>
+	var person = Backbone.Model.extend({
+		defaults: {
+			name: '',
+			gender: '女',
+			age: 20,
+			score: 120
+		}
+	});
+
+	var man = new person();
+
+	man.on('change:score', function(model, value) {
+		var oldscore = model.previous('score');
+		if (value > oldscore) {
+			console.log('比上次进步了：', (value - oldscore));
+		} else {
+			console.log('比上次退步了：', (oldscore - value));
+		}
+	});
+
+	man.on('change:age', function(model, value) {
+		var objAttr = model.previousAttributes();
+		old = objAttr.age;
+		if (value > old) {
+			console.log('长大了：', (value - old));
+		} else {
+			console.log('年轻了：', (old - value));
+		}
+	})
+	
+	man.set({ 'age': 33, 'score': 200});
+</script>
+</html>

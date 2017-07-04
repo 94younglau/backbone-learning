@@ -1,0 +1,24 @@
+.show .edit, .editing .disp {
+	display: none;
+}
+.show .disp, editing .edit {
+	display: inline;
+}
+
+.input {
+	margin-top: 20px;
+	padding: 20px;
+	background: gray;
+}
+.input:after {
+	content: ' ';
+	display: table;
+	clear: both;
+}
+.spanl, .spanr {
+	float: left;
+	width: 200px;
+}
+.li_c div {
+	display: inline;
+}

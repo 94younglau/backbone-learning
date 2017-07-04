@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Backbone-Collection-Create</title>
+	<script src="js/jquery-1.12.4.min.js"></script>
+	<script src="js/underscore.js"></script>
+	<script src="js/backbone.js"></script>
+	<script src="js/backbone.localStorage.js"></script>
+	<!-- <link rel="stylesheet" href="css/student.css"> -->
+	<style>
+		.change {
+			border: 1px solid red;
+		}
+	</style>
+</head>
+	
+<body>
+	<h1>服务器交互Create</h1>
+</body>
+
+<script>
+	// 清楚缓存
+	window.localStorage.clear();
+
+	var Student = Backbone.Model.extend({
+		defaults: {
+			code: '',
+			name: '',
+			score: ''
+		},
+		idAttribute: 'code'
+	});
+
+	var StudentCollection = Backbone.Collection.extend({
+		model: Student,
+		localStorage: new Store('create-demo')
+	});
+
+	var students = new StudentCollection();
+
+	students.create({
+		code: '101',
+		name: '张三',
+		score: 80
+	});
+
+	students.create({
+		code: '102',
+		name: '李四',
+		score: 50
+	});
+
+	console.log('已存入的数据');
+	_.each(students.models, function(item) {
+		console.log(item.toJSON());
+	});
+
+	console.log(localStorage);
+</script>
+</html>

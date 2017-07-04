@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Backbone-View多个事件</title>
+	<script src="js/jquery-1.12.4.min.js"></script>
+	<script src="js/underscore.js"></script>
+	<script src="js/backbone.js"></script>
+	<!-- <script src="js/app.js"></script> -->
+	<!-- <link rel="stylesheet" href="css/student.css"> -->
+	<style>
+		.change {
+			border: 1px solid red;
+		}
+	</style>
+</head>
+<body>
+<h1>events对象存放的DOM元素的事件列表</h1>
+<script type="text/template" id="tpl-main">
+	<div id="backbone">{{ mess }}</div>
+	<input type="button" id="btnshow" value="点击toggle">
+</script>
+</body>
+<div id="main"></div>
+<script>
+	_.templateSettings = {
+		interpolate: /\{\{(.+?)\}\}/g
+	};
+	var stuView =  Backbone.View.extend({
+		el: $('#main'),
+		initialize: function() {
+			this.template = _.template($('#tpl-main').html());
+			this.render();
+		},
+		render: function() {
+			this.$el.html(this.template({mess: '这是消息xxxxx!' }));
+		},
+		events: {
+			'click div#backbone': 'toglcs',
+			'click input#btnshow': 'toggle',
+		},
+
+		togcls: function() {
+			$('#backbone').toggleClass('change');
+		},
+		toggle: function() {
+			$('#backbone').toggle();
+		}
+	});
+
+	var stuv = new stuView();
+
+
+	[
+		{
+			姓名: 刘源,
+			号码: 13123456789,
+			邮箱: xxx@ly.com,
+			地址: 中国广东,
+			其他: ...
+		},
+
+	]
+</script>
+</html>

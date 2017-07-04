@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Backbone-Events-on绑定多个事件</title>
+	<script src="js/jquery-1.12.4.min.js"></script>
+	<script src="js/underscore.js"></script>
+	<script src="js/backbone.js"></script>
+	<!-- <script src="js/app.js"></script> -->
+	<!-- <link rel="stylesheet" href="css/student.css"> -->
+	<style>
+		.change {
+			border: 1px solid red;
+		}
+	</style>
+</head>
+
+<body>
+</body>
+<div id="main"></div>
+<script>
+	var person = Backbone.Model.extend({
+		defaults: {
+			name: '',
+			gender: '女',
+			age: 20,
+			score: 120
+		}
+	});
+
+	var man = new person();
+
+	man.on('change:score change:age', function(model, value) {
+		var oldage = model.previous('age');
+		var newage = model.get('age');
+		console.log('age原值：' + oldage + '，新值：' + newage);
+
+		var oldscore = model.previous('score');
+		var newscore = model.get('score');
+		console.log('score原值：' + oldscore + '，新值：' + newscore);
+	});
+
+	man.set('age', 34);
+	man.set('score', 100);
+
+	// 第二种
+	// var objEvents = {
+	// 	'change:score': score_change,
+	// 	'change:age': age_change
+	// }
+	// man.on(objEvents);
+	// function score_chage() {...}
+	// function age_change() {...}
+</script>
+</html>

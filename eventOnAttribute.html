@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Backbone-Events-on绑定属性事件</title>
+	<script src="js/jquery-1.12.4.min.js"></script>
+	<script src="js/underscore.js"></script>
+	<script src="js/backbone.js"></script>
+	<!-- <script src="js/app.js"></script> -->
+	<!-- <link rel="stylesheet" href="css/student.css"> -->
+	<style>
+		.change {
+			border: 1px solid red;
+		}
+	</style>
+</head>
+
+<body>
+</body>
+<div id="main"></div>
+<script>
+	var person = Backbone.Model.extend({
+		defaults: {
+			name: '',
+			gender: '女'
+		}
+	});
+
+	var man = new person();
+
+	man.on('change', function() {
+		console.log('对象的值发生了变化！');
+	});
+	man.on('change:gender', function(model, value) {
+		console.log('gender发生了变化，变化为：', value);
+	});
+
+	man.set('gender', '男');
+</script>
+</html>

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Backbone-联系人</title>
+	<script src="js/jquery-1.12.4.min.js"></script>
+	<script src="js/underscore.js"></script>
+	<script src="js/backbone.js"></script>
+	<script src="js/backbone.localStorage.js"></script>
+	<!-- <script src="js/app.js"></script> -->
+	<!-- <link rel="stylesheet" href="css/student.css"> -->
+	<style>
+		body {
+			font-size: 12px;
+		}
+		.unact {
+			position: relative;
+		}
+		.unact > *:not(.sele) {
+			display: none;
+		}
+		button {
+			border: 1px solid #ccc;
+			background-color: #eee;
+			line-height: 18px;
+			font-size: 12px;
+		}
+		#info {
+			width: 360px;
+			border: solid 1px #ccc;
+			background-color: #eee;
+		}
+		#info .person .top {
+			width: 100%;
+		}
+		#info .person .top header input {
+			border: none;
+			height: 28px;
+			line-height: 28px;
+			width: 100%;
+			font-size: 20px;
+			line-height: 18px;
+			font-size: 12px;
+			padding: 3px;
+		}
+		#info .person .top .items {
+			max-height: 300px;
+			overflow-y: scroll;
+			background-color: #fff;
+		}
+		#info .person .top .item {
+			height: 32px;
+			padding: 0 15px;
+			line-height: 32px;
+			border-bottom: 1px solid black;
+			color: #333;
+			text-overflow: ellipsis;
+			overflow: hidden;
+			white-space: nowrap;
+		}
+		#info .person .top .item.sele {
+			color: #555;
+			background: #eee;
+		}
+		#info .person .top footer {
+			padding: 6px;
+			border-bottom: 1px solid #c5c5c5;
+			background: #fff;
+			text-align: right;
+		}
+		#info .person .main {
+			width: 100%;
+		}
+		#info .person .main header {
+			color: #333;
+			font-weight: bold;
+			text-shadow: 0 1px 1px #fff;
+			font-size: 14px;
+			border-bottom: 1px solid #ccc;
+			background: #fff;
+			overflow: hidden;
+		}
+		#info .person .main header a {
+			float: left;
+			line-height: 32px;
+			height: 32px;
+			padding: 0 20px;
+			cursor: pointer;
+			border-right: 1px solid #ccc;
+			text-decoration: none;
+		}
+		#info .person .main .content {
+			padding: 20px;
+		}
+	</style>
+</head>
+<body>
+	<div id="info"></div>
+</body>
+
+	<script type="text/template" id="tpl-item">
+		{{ (name ? name : '姓名为空') }}
+	</script>
+
+	<script type="text/template" id="tpl-top">
+		<header>
+			<input type="search" placeholder="搜索联系人" autofocus>
+		</header>
+		<div class="items"></div>
+		<footer>
+			<button>新建</button>
+		</footer>
+	</script>
+
+	<script type="text/template" id="tpl-show">
+		<header>
+			<a class="edit">编辑</a>
+		</header>
+		<div class="content">
+			<p>姓名：{{ name }}</p>
+			<p>性别：{{ gender }}</p>
+			<p>邮箱：{{ email }}</p>
+		</div>
+	</script>
+
+	<script type="text/template" id="tpl-edit">
+		<header>
+			<a class="save">保存</a>
+			<a class="dele">删除</a>
+		</header>
+		<div class="content">
+			<form>
+				<div>
+					<span>姓名：</span>
+					<input type="text" id="name" name="name" value="{{ name }}">
+				</div>
+				<div>
+					<span>性别：</span>
+					<input type="text" id="gender" name="gender" value="{{ gender }}">
+				</div>
+				<div>
+					<span>邮箱：</span>
+					<input type="text" id="email" name="email" value="{{ email }}">
+				</div>
+			</form>
+		</div>
+	</script>
+
+	<script>
+	(function($) {
+		$(function() {
+			_.templateSettings = {
+					interpolate: /\{\{(.+?)\}\}/g
+				};
+
+				var Person = Backbone.Model.extend({
+					defaults: {
+						name: '',
+						gender: '',
+						email: ''
+					},
+					search: function(key) {
+						if (typeof (key) === 'undefined' || key === null || key === '') {
+							return true;
+						};
+						key = key.toLowerCase();
+						return this.get('name').toLowerCase().indexOf(key) != -1 || this.get('email').toLowerCase().indexOf(key) != -1;
+					}
+				});
+
+				var Persons = Backbone.Collection.extend({
+					model: Person,
+					localStorage: new Store('person-data')
+				});
+
+				var PersonItemView = Backbone.View.extend({
+					className: 'item',
+					template: _.template($('#tpl-item').html()),
+					events: {
+						'click': 'select'
+					},
+					initialize: function() {
+						_.bindAll(this, 'select');
+						this.model.bind('reset', this.render, this);
+						this.model.bind('change', this.render, this);
+						this.model.bind('destroy', this.remove, this);
+
+						if(this.model.view) this.model.view.remove();
+						this.model.view = this;
+					},
+					render: function() {
+						this.$el.html(this.template(this.model.toJSON()));
+						return this;
+					},
+					select: function() {
+						appRouter.navigate('person/' + this.model.cid, { trigger: true });
+					},
+					sele: function() {
+						this.$el.addClass('sele');
+					},
+					desele: function() {
+						this.$el.removeClass('sele');
+					}
+				});
+
+				var TopView = Backbone.View.extend({
+					className: 'top',
+					template: _.template($('#tpl-top').html()),
+					events: {
+						'click footer button': 'create',
+						'keyup input': 'search'
+					},
+					initialize: function() {
+						_.bindAll(this, 'create', 'search');
+						this.model.bind('reset', this.renderAll(), this);
+						this.model.bind('add', this.add, this);
+						this.model.bind('remove', this.remove, this);
+					},
+					render: function() {
+						$(this.el).html(this.template());
+						this.renderAll();
+						return this;
+					},
+					renderAll: function() {
+						this.$('.items').empty();
+						console.log(this);
+						this.model.each(this.renderOne, this);
+						this.search();
+					},
+					renderOne: function(contact) {
+						var view = new PersonItemView({ model: contact });
+						this.$('.items').append(view.render().el);
+					},
+					create: function() {
+						var contact = new Person();
+						this.model.add(contact);
+						appRouter.navigate('person/' + contact.cid + '/edit', { trigger: true });
+					},
+					search: function() {
+						var key = $('input', this.el).val();
+						this.model.each(function(contact, element, index, list) {
+							contact.view.$el.toggle(contact.search(key));
+						});
+					},
+					sele: function(item) {
+						if (this.seleItem) this.seleItem.view.desele();
+						this.seleItem = item;
+						if (this.seleItem) this.seleItem.view.sele();
+					},
+					add: function(contact) {
+						this.renderOne(contact);
+					},
+					remove: function(contact) {
+						console.log(contact.cid);
+					}
+				});
+
+				var ShowView = Backbone.View.extend({
+					className: 'show',
+					template: _.template($('#tpl-show').html()),
+					events: {
+						'click .edit': 'edit'
+					},
+					initialize: function() {
+						_.bindAll(this, 'edit');
+					},
+					render: function() {
+						if (this.item) this.$el.html(this.template(this.item.toJSON()));
+						return this;
+					},
+					change: function(item) {
+						this.item = item;
+						this.render();
+					},
+					edit: function() {
+						if (this.item) {
+							appRouter.navigate('person/' + this.item.cid + '/edit', { trigger: true });
+						}
+					}
+				});
+
+				var EditView = Backbone.View.extend({
+					className: 'edit',
+					template: _.template($('#tpl-edit').html()),
+					events: {
+						'click .save': 'submit',
+						'click .dele': 'remove'
+					},
+					initialize: function() {
+						_.bindAll(this, 'submit', 'remove');
+					},
+					render: function() {
+						if (this.item) this.$el.html(this.template(this.item.toJSON()));
+						return this;
+					},
+					change: function(item) {
+						this.item = item;
+						this.render();
+					},
+					submit: function() {
+						this.item.set(this.form());
+						this.item.save();
+						appRouter.navigate('person/' + this.item.cid, { trigger: true });
+						return false;
+					},
+					form: function() {
+						return {
+							name: this.$('#name').val(),
+							gender: this.$('#gender').val(),
+							email: this.$('#email').val()
+						};
+					},
+					remove: function() {
+						this.item.destroy();
+						this.item = null;
+						appRouter.navigate('', { trigger: true });
+					}
+				});
+
+				var MainView = Backbone.View.extend({
+					className: 'main unact',
+					initialize: function() {
+						this.editView = new EditView();
+						this.showView = new ShowView();
+					},
+					render: function() {
+						this.$el.append(this.showView.render().el);
+						this.$el.append(this.editView.render().el);
+						return this;
+					},
+					edit: function(item) {
+						this.showView.$el.removeClass('sele');
+						this.editView.$el.addClass('sele');
+						this.editView.change(item);
+					},
+					show: function(item) {
+						this.editView.$el.removeClass('sele');
+						this.showView.$el.addClass('sele');
+						this.showView.change(item);
+					}
+				});
+
+				var AppView = Backbone.View.extend({
+					className: 'person',
+					initialize: function() {
+						this.top = new TopView({ model: this.model });
+						this.main = new MainView();
+						this.model.fetch();
+						this.render();
+					},
+					render: function() {
+						this.$el.append(this.top.render().el);
+						this.$el.append(this.main.render().el);
+						$('#info').append(this.el);
+						return this;
+					},
+					show: function(item) {
+						this.top.sele(item);
+						this.main.show(item);
+					},
+					edit: function(item) {
+						this.top.sele(item);
+						this.main.edit(item);
+					} 
+				});
+
+				var AppRouter = Backbone.Router.extend({
+					routes: {
+						'': 'show',
+						'person/:id': 'show',
+						'person/:id/edit': 'edit'
+					},
+					show: function(id) {
+						if (id != undefined) {
+							appView.show(this.getPerson(id));
+						} else {
+							appView.show(person.first());
+						}
+					},
+					edit: function(id) {
+						appView.edit(this.getPerson(id));
+					},
+					getPerson: function(id) {
+						return person.get(id);
+					}
+				});
+
+				var person = new Persons();
+
+				window.appView = new AppView({ model: person });
+
+				window.appRouter = new AppRouter();
+
+				Backbone.history.start();
+		});
+	})(jQuery);
+	</script>
+</html>

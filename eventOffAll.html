@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Backbone-Events-off移除对象绑定队友事件</title>
+	<script src="js/jquery-1.12.4.min.js"></script>
+	<script src="js/underscore.js"></script>
+	<script src="js/backbone.js"></script>
+	<!-- <script src="js/app.js"></script> -->
+	<!-- <link rel="stylesheet" href="css/student.css"> -->
+	<style>
+		.change {
+			border: 1px solid red;
+		}
+	</style>
+</head>
+
+<body>
+</body>
+
+<script>
+	var person = Backbone.Model.extend({
+		defaults: {
+			name: '',
+			gender: '女',
+			age: 20,
+			score: 120
+		}
+	});
+
+	var man = new person();
+
+	var m = 0, n = 0;
+
+	var callback_a = function() {
+		m++;
+		console.log('你执行a事件的次数为', m);
+	}
+	var callback_b = function() {
+		n++;
+		console.log('你执行b事件的次数为', n);
+	}
+
+	man.on('event_a', callback_a);
+	man.on('event_b', callback_b);
+
+	man.off();
+
+	man.trigger('event_a event_b');
+
+</script>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Backbone-Router-Action</title>
+	<script src="js/jquery-1.12.4.min.js"></script>
+	<script src="js/underscore.js"></script>
+	<script src="js/backbone.js"></script>
+	<!-- <script src="js/app.js"></script> -->
+	<!-- <link rel="stylesheet" href="css/student.css"> -->
+	<style>
+		.change {
+			border: 1px solid red;
+		}
+	</style>
+</head>
+
+<body>
+	<div>
+		<a href="">首页</a> |
+		<a href="#search">查询列表</a> |
+		<a href="#search/abc">关键字查询</a> |
+		<a href="#search/abc/p2">关键字页码</a> |
+		<a href="#error">其他</a>
+	</div>
+	<div class="divshow"></div>
+</body>
+
+<script>
+	var $divShow = $('.divshow');
+	var testrouter = Backbone.Router.extend({
+		routes: {
+			'': 'main',
+			'search': 'search_list',
+			'search/:key': 'search_key',
+			'search/:key/p:page': 'search_key_page',
+			'*search': 'search_default'
+		},
+		main: function() {
+			$divShow.html('main');
+		},
+		search_list: function() {
+			$divShow.html('list');
+		},
+		search_key: function(key) {
+			$divShow.html(key + '记录');
+		},
+		search_key_page: function(key, page) {
+			$divShow.html('记录' + key + '页码' + page);
+		},
+		search_default: function() {
+			$divShow.html('其他');
+		}
+	});
+
+	var router = new testrouter();
+	Backbone.history.start();
+</script>
+</html>

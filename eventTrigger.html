@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Backbone-Events-trigger触发事件</title>
+	<script src="js/jquery-1.12.4.min.js"></script>
+	<script src="js/underscore.js"></script>
+	<script src="js/backbone.js"></script>
+	<!-- <script src="js/app.js"></script> -->
+	<!-- <link rel="stylesheet" href="css/student.css"> -->
+	<style>
+		.change {
+			border: 1px solid red;
+		}
+	</style>
+</head>
+
+<body>
+</body>
+<h1>trigger方法的的功能个旧市手动执行事件绑定的事件， 类似于自定义一个函数后，调用函数名。因此该方法就是执行事件，不论该事件是自定义还是系统自带的。</h1>
+<div id="main"></div>
+<script>
+	var person = Backbone.Model.extend({
+		defaults: {
+			name: '',
+			gender: '女',
+			age: 20,
+			score: 120
+		}
+	});
+
+	var man = new person();
+
+	man.on('change_age_gender', function() {
+		console.log('触发了自定义事件！change_age_gender');
+	});
+
+	man.on('change:age', function(model, value) {
+		if (value != undefined) {
+			console.log('更改后的年龄是：', value);
+		} else {
+			console.log('手动触发了一个change:age事件');
+		}
+	});
+
+	man.trigger('change_age_gender');
+	man.trigger('change:age');
+	man.set('age', 90);
+
+	// 第二种
+	// var objEvents = {
+	// 	'change:score': score_change,
+	// 	'change:age': age_change
+	// }
+	// man.on(objEvents);
+	// function score_chage() {...}
+	// function age_change() {...}
+</script>
+</html>
